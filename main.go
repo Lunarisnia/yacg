@@ -6,5 +6,5 @@ import (
 
 func main() {
 	newPPM := ppm.NewPPM()
-	newPPM.DebugImage()
+	newPPM.DrawCubeCorner()
 }
