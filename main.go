@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"github.com/lunarisnia/yacg/internal/ppm"
+)
 
 func main() {
-	fmt.Println("Hello, World")
+	newPPM := ppm.NewPPM()
+	newPPM.DebugImage()
 }
