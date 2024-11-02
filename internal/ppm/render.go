@@ -138,6 +138,7 @@ func (p *PPMImpl) DebugImage() {
 	}
 }
 
+// DrawCubeCorner this use rasterization technique
 func (p *PPMImpl) DrawCubeCorner() {
 	screenWidth := 20
 	screenHeight := 20
@@ -160,13 +161,15 @@ func (p *PPMImpl) DrawCubeCorner() {
 	}
 	normedCubeProjection := make([]types.Vector3f, 0)
 	for _, c := range cube {
+		// This results in screenspace
 		pPrimeX := c.X / c.Z * -1
 		pPrimeX *= vector.Length(canvasPosition)
-
 		pPrimeY := c.Y / c.Z * -1
 		pPrimeY *= vector.Length(canvasPosition)
+
 		// fmt.Printf("X: %v, Y: %v\n", pPrimeX, pPrimeY)
 
+		// Convert to normalized device coordinate
 		normalizedPrimeX := (float64(screenWidth)/2 + pPrimeX) / float64(screenWidth)
 		normalizedPrimeY := (float64(screenHeight)/2 + pPrimeY) / float64(screenHeight)
 		normedCubeProjection = append(normedCubeProjection, types.Vector3f{
@@ -174,7 +177,7 @@ func (p *PPMImpl) DrawCubeCorner() {
 			Y: normalizedPrimeY,
 			Z: c.Z,
 		})
-		// fmt.Printf("X: %v, Y: %v\n", normalizedPrimeX*20, normalizedPrimeY*20)
+		// fmt.Printf("X: %v, Y: %v\n", normalizedPrimeX, normalizedPrimeY)
 	}
 
 	p.InitPPM(&PPMHeader{
@@ -190,7 +193,9 @@ func (p *PPMImpl) DrawCubeCorner() {
 				Blue:  0,
 			}
 			for _, cp := range normedCubeProjection {
-				if i == int(math.Round(cp.X*float64(screenWidth))) && j == int(math.Round(cp.Y*float64(screenHeight))) {
+				// Convert to rasterspace
+				if i == int(math.Round(cp.X*float64(screenWidth))) &&
+					j == int(math.Round(cp.Y*float64(screenHeight))) {
 					c.Red = 255
 				}
 			}

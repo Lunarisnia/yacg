@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/lunarisnia/yacg/internal/ppm"
-)
+import "github.com/lunarisnia/yacg/internal/ppm"
 
 func main() {
 	newPPM := ppm.NewPPM()
