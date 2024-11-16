@@ -29,3 +29,7 @@ func DivideScalar(a types.Vector3f, b float64) types.Vector3f {
 func UnitVector(v types.Vector3f) types.Vector3f {
 	return DivideScalar(v, Length(v))
 }
+
+func DotProduct(a types.Vector3f, b types.Vector3f) float64 {
+	return a.X*b.X + a.Y*b.Y + a.Z*b.Z
+}

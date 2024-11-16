@@ -44,6 +44,7 @@ type PPM interface {
 	// DebugImage will print out a 3x2 image with some random color just for debugging ppm
 	DebugImage()
 	DrawCubeCorner()
+	RenderWithCustomCoordinate()
 }
 
 type PPMImpl struct {
@@ -59,6 +60,9 @@ func NewPPM() PPM {
 func (p *PPMImpl) InitPPM(header *PPMHeader) error {
 	if header == nil {
 		return errors.New("header is required")
+	}
+	if header.MaxColorValue == 0 {
+		header.MaxColorValue = 255
 	}
 	p.imageSize = header.Width * header.Height
 	fmt.Println("P3")
