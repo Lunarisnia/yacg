@@ -33,3 +33,11 @@ func UnitVector(v types.Vector3f) types.Vector3f {
 func DotProduct(a types.Vector3f, b types.Vector3f) float64 {
 	return a.X*b.X + a.Y*b.Y + a.Z*b.Z
 }
+
+func AddVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
+	return types.Vector3f{
+		X: a.X + b.X,
+		Y: a.Y + b.Y,
+		Z: a.Z + b.Y,
+	}
+}
