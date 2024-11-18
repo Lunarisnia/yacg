@@ -3,6 +3,7 @@ package vector
 import (
 	"math"
 
+	"github.com/lunarisnia/yacg/internal/color"
 	"github.com/lunarisnia/yacg/internal/types"
 )
 
@@ -64,5 +65,13 @@ func MultiplyVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
 		X: a.X * b.X,
 		Y: a.Y * b.Y,
 		Z: a.Z * b.Z,
+	}
+}
+
+func ToColor(a types.Vector3f) *color.RGB {
+	return &color.RGB{
+		Red:   int(a.X),
+		Green: int(a.Y),
+		Blue:  int(a.Z),
 	}
 }

@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/lunarisnia/yacg/internal/color"
 	"github.com/lunarisnia/yacg/internal/ppm"
 	"github.com/lunarisnia/yacg/internal/screen"
 	"github.com/lunarisnia/yacg/internal/types"
+	"github.com/lunarisnia/yacg/internal/types/ray"
 	"github.com/lunarisnia/yacg/internal/types/vector"
 )
 
@@ -41,19 +39,25 @@ func main() {
 		vector.AddScalar(upperLeftCoordinate, 0.5),
 		vector.MultiplyVector(pixelDeltaU, pixelDeltaV),
 	)
-	fmt.Println(pixel00)
 
 	for i := range screenHeight {
 		for j := range screenWidth {
-			normalizedY := float64(i) / float64(screenHeight)
-			normalizedX := float64(j) / float64(screenWidth)
-			err := newPPM.DrawPixel(&color.RGB{
-				Green: int(normalizedY * 256.0),
-				Blue:  int(normalizedX * 256.0),
-			})
-			if err != nil {
-				panic(err)
+			pixelCenter := vector.AddVector(
+				pixel00,
+				vector.AddVector(
+					vector.MultiplyScalar(pixelDeltaV, float64(i)),
+					vector.MultiplyScalar(pixelDeltaU, float64(j)),
+				),
+			)
+			rayDirection := vector.SubtractVector(pixelCenter, cameraOrigin)
+			r := types.Ray{
+				Origin:    pixelCenter,
+				Direction: rayDirection,
 			}
+			// fmt.Println("Center Point: ", pixelCenter)
+			// fmt.Println("Ray Point: ", ray)
+			colorVector := ray.Raycast(r)
+			newPPM.DrawPixel(vector.ToColor(colorVector))
 		}
 	}
 }
