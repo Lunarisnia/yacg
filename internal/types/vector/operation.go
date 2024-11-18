@@ -41,3 +41,28 @@ func AddVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
 		Z: a.Z + b.Y,
 	}
 }
+
+func SubtractVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
+	return types.Vector3f{
+		X: a.X - b.X,
+		Y: a.Y - b.Y,
+		Z: a.Z - b.Z,
+	}
+}
+
+func AddScalar(a types.Vector3f, b float64) types.Vector3f {
+	return types.Vector3f{
+		X: a.X + b,
+		Y: a.Y + b,
+		Z: a.Z + b,
+	}
+}
+
+// TODO: I need to figure out why this isn't a dot/cross product
+func MultiplyVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
+	return types.Vector3f{
+		X: a.X * b.X,
+		Y: a.Y * b.Y,
+		Z: a.Z * b.Z,
+	}
+}

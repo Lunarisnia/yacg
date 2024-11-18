@@ -4,7 +4,10 @@ import "math"
 
 type AspectRatio float64
 
-const SixteenByNine AspectRatio = 16.0 / 9.0
+const (
+	SixteenByNine AspectRatio = 16.0 / 9.0
+	OneByOne      AspectRatio = 1.0 / 1.0
+)
 
 func (a AspectRatio) Value() float64 {
 	return float64(a)
