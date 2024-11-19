@@ -28,10 +28,14 @@ func main() {
 	viewportU := types.Vector3f{X: vWidth, Y: 0, Z: 0}
 	viewportV := types.Vector3f{X: 0, Y: -vHeight, Z: 0}
 
-	upperLeftCoordinate := vector.SubtractVector(vector.SubtractVector(vector.SubtractVector(
-		cameraOrigin,
-		types.Vector3f{X: 0, Y: 0, Z: focalLength},
-	), vector.DivideScalar(viewportU, 2)), vector.DivideScalar(viewportV, 2))
+	upperLeftCoordinate := vector.SubtractVector(
+		vector.SubtractVector(
+			vector.SubtractVector(
+				cameraOrigin,
+				types.Vector3f{X: 0, Y: 0, Z: focalLength},
+			),
+			vector.DivideScalar(viewportU, 2)),
+		vector.DivideScalar(viewportV, 2))
 
 	pixelDeltaU := vector.DivideScalar(viewportU, float64(screenWidth))
 	pixelDeltaV := vector.DivideScalar(viewportV, float64(screenHeight))
@@ -52,10 +56,10 @@ func main() {
 			rayDirection := vector.SubtractVector(pixelCenter, cameraOrigin)
 			r := types.Ray{
 				Origin:    pixelCenter,
-				Direction: rayDirection,
+				Direction: vector.UnitVector(rayDirection),
 			}
 			// fmt.Println("Center Point: ", pixelCenter)
-			// fmt.Println("Ray Point: ", ray)
+			// fmt.Println("Ray Point: ", r)
 			colorVector := ray.Raycast(r)
 			newPPM.DrawPixel(vector.ToColor(colorVector))
 		}
