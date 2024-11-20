@@ -51,6 +51,7 @@ func SubtractVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
 	}
 }
 
+// NOTE: YOU CAN'T ADD SCALAR TO A VECTOR YOU IDIOT
 func AddScalar(a types.Vector3f, b float64) types.Vector3f {
 	return types.Vector3f{
 		X: a.X + b,
@@ -73,5 +74,13 @@ func ToColor(a types.Vector3f) *color.RGB {
 		Red:   int(a.X),
 		Green: int(a.Y),
 		Blue:  int(a.Z),
+	}
+}
+
+func SubtractScalar(a types.Vector3f, b float64) types.Vector3f {
+	return types.Vector3f{
+		X: a.X - b,
+		Y: a.Y - b,
+		Z: a.Z - b,
 	}
 }

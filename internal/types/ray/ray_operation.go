@@ -5,6 +5,7 @@ import (
 	"github.com/lunarisnia/yacg/internal/types/vector"
 )
 
+// At r = o + (t*d)
 func At(r types.Ray, t float64) types.Vector3f {
 	return vector.AddVector(r.Origin, vector.MultiplyScalar(r.Direction, t))
 }
