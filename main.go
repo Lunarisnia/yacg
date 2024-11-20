@@ -54,18 +54,19 @@ func main() {
 			rayDirection := vector.SubtractVector(pixelCenter, cameraOrigin)
 			r := types.Ray{
 				Origin:    pixelCenter,
-				Direction: rayDirection,
+				Direction: vector.UnitVector(rayDirection),
 			}
 			s := geometry.Sphere{
 				Center: types.Vector3f{
 					X: 0,
 					Y: 0,
-					Z: -1,
+					Z: -10,
 				},
-				Radius: 0.2,
+				Radius: 1,
 			}
-			if s.Intersect(r) {
-				// fmt.Printf("RAY AT: (%v, %v) HIT!\n", j, i)
+			if t := s.Intersect(r); t > 0.0 {
+				// TODO: Refactor this to separate the color of the sphere
+				// colorVector := ray.At(r, t)
 				newPPM.DrawPixel(&color.RGB{Red: 255, Green: 255, Blue: 255})
 			} else {
 				colorVector := ray.Raycast(r)
