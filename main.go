@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/lunarisnia/yacg/internal/geometry"
+	"github.com/lunarisnia/yacg/internal/geometry/object"
 	"github.com/lunarisnia/yacg/internal/ppm"
 	"github.com/lunarisnia/yacg/internal/screen"
 	"github.com/lunarisnia/yacg/internal/types"
@@ -10,7 +12,6 @@ import (
 
 // TODO: Do a writing on summary of this code
 // NOTE: Focal Length is the distance between the eye to the viewport/canvas
-// TODO: Learn Hadamard Product
 func main() {
 	newPPM := ppm.NewPPM()
 	screenWidth := 800
@@ -40,6 +41,17 @@ func main() {
 	pixel00Inset := vector.AddVector(pixelDeltaU, pixelDeltaV)
 	pixel00 := vector.AddVector(upperLeftCoordinate, vector.MultiplyScalar(pixel00Inset, float64(0.5)))
 
+	objects := make([]object.Object, 0)
+	sphere01 := geometry.Sphere{
+		Center: types.Vector3f{
+			X: 0,
+			Y: 0,
+			Z: -2,
+		},
+		Radius: 0.5,
+	}
+	objects = append(objects, &sphere01)
+
 	for i := range screenHeight {
 		for j := range screenWidth {
 			pixelCenter := vector.AddVector(
@@ -56,7 +68,7 @@ func main() {
 			}
 			// fmt.Println("Center Point: ", pixelCenter)
 			// fmt.Println("Ray Point: ", r)
-			colorVector := ray.Raycast(r)
+			colorVector := ray.Raycast(r, objects)
 			newPPM.DrawPixel(colorVector)
 		}
 	}
