@@ -24,7 +24,7 @@ func MultiplyScalar(a types.Vector3f, b float64) types.Vector3f {
 }
 
 func DivideScalar(a types.Vector3f, b float64) types.Vector3f {
-	return MultiplyScalar(a, 1/b)
+	return MultiplyScalar(a, float64(1.0)/b)
 }
 
 func UnitVector(v types.Vector3f) types.Vector3f {
@@ -39,7 +39,7 @@ func AddVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
 	return types.Vector3f{
 		X: a.X + b.X,
 		Y: a.Y + b.Y,
-		Z: a.Z + b.Y,
+		Z: a.Z + b.Z,
 	}
 }
 
@@ -51,16 +51,7 @@ func SubtractVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
 	}
 }
 
-// NOTE: YOU CAN'T ADD SCALAR TO A VECTOR YOU IDIOT
-func AddScalar(a types.Vector3f, b float64) types.Vector3f {
-	return types.Vector3f{
-		X: a.X + b,
-		Y: a.Y + b,
-		Z: a.Z + b,
-	}
-}
-
-// TODO: I need to figure out why this isn't a dot/cross product
+// MultiplyVector produce a Hadamard Product
 func MultiplyVector(a types.Vector3f, b types.Vector3f) types.Vector3f {
 	return types.Vector3f{
 		X: a.X * b.X,
@@ -77,10 +68,20 @@ func ToColor(a types.Vector3f) *color.RGB {
 	}
 }
 
+// NOTE: YOU CAN'T SUBTRACT SCALAR TO A VECTOR YOU DUMBO
 func SubtractScalar(a types.Vector3f, b float64) types.Vector3f {
 	return types.Vector3f{
 		X: a.X - b,
 		Y: a.Y - b,
 		Z: a.Z - b,
+	}
+}
+
+// NOTE: YOU CAN'T ADD SCALAR TO A VECTOR YOU IDIOT
+func AddScalar(a types.Vector3f, b float64) types.Vector3f {
+	return types.Vector3f{
+		X: a.X + b,
+		Y: a.Y + b,
+		Z: a.Z + b,
 	}
 }
