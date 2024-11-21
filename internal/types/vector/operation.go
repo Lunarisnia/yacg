@@ -68,6 +68,14 @@ func ToColor(a types.Vector3f) *color.RGB {
 	}
 }
 
+func InverseVector(a types.Vector3f) types.Vector3f {
+	return types.Vector3f{
+		X: -a.X,
+		Y: -a.Y,
+		Z: -a.Z,
+	}
+}
+
 // NOTE: YOU CAN'T SUBTRACT SCALAR TO A VECTOR YOU DUMBO
 func SubtractScalar(a types.Vector3f, b float64) types.Vector3f {
 	return types.Vector3f{

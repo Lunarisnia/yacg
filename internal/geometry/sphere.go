@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/lunarisnia/yacg/internal/types"
+	"github.com/lunarisnia/yacg/internal/types/hitrecord"
 	"github.com/lunarisnia/yacg/internal/types/ray"
 	"github.com/lunarisnia/yacg/internal/types/vector"
 )
@@ -35,6 +36,7 @@ func (s Sphere) Intersect(r types.Ray, hitRecord *types.HitRecord) bool {
 	hitRecord.T = root
 	hitRecord.HitPoint = ray.At(r, hitRecord.T)
 	hitRecord.Normal = vector.UnitVector(vector.SubtractVector(hitRecord.HitPoint, s.Center))
+	hitrecord.SetFaceNormal(hitRecord, r, hitRecord.Normal)
 
 	return true
 }
