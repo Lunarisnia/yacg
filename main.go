@@ -71,26 +71,33 @@ func main() {
 	)
 
 	objects := make([]object.Object, 0)
-	sphere01 := geometry.Sphere{
+	objects = append(objects, &geometry.Sphere{
 		Name: "Sphere 01",
 		Center: types.Vector3f{
-			X: 0,
+			X: 1,
 			Y: 0,
 			Z: -2,
 		},
 		Radius: 0.5,
-	}
-	sphere02 := geometry.Sphere{
+	})
+	objects = append(objects, geometry.Sphere{
 		Name: "Sphere 02",
 		Center: types.Vector3f{
-			X: 0.5,
+			X: 0,
 			Y: 0,
-			Z: -4.5,
+			Z: -1,
 		},
-		Radius: 1.5,
-	}
-	objects = append(objects, &sphere02)
-	objects = append(objects, &sphere01)
+		Radius: 0.5,
+	})
+	objects = append(objects, geometry.Sphere{
+		Name: "Ground",
+		Center: types.Vector3f{
+			X: 0,
+			Y: -100.5,
+			Z: -1,
+		},
+		Radius: 100,
+	})
 
 	counter := 0
 	for i := range screenHeight {
@@ -104,8 +111,9 @@ func main() {
 				),
 			)
 			rayDirection := vector.SubtractVector(pixelCenter, cameraOrigin)
+			// Originates from the eye point moving towards the pixelCenter
 			r := types.Ray{
-				Origin:    pixelCenter,
+				Origin:    cameraOrigin,
 				Direction: vector.UnitVector(rayDirection),
 			}
 			// fmt.Println("Center Point: ", pixelCenter)

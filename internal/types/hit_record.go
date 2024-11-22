@@ -1,8 +1,9 @@
 package types
 
 type HitRecord struct {
-	HitPoint  Vector3f
-	Normal    Vector3f
-	T         float64
-	FrontFace bool
+	ObjectName string
+	HitPoint   Vector3f
+	Normal     Vector3f
+	T          float64
+	FrontFace  bool
 }

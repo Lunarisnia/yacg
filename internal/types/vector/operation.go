@@ -8,7 +8,7 @@ import (
 )
 
 func LengthSquared(v types.Vector3f) float64 {
-	return float64(v.X*v.X + v.Y*v.Y + v.Z*v.Z)
+	return v.X*v.X + v.Y*v.Y + v.Z*v.Z
 }
 
 func Length(v types.Vector3f) float64 {

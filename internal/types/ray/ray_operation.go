@@ -26,11 +26,12 @@ func Raycast(r types.Ray, tMin float64, tMax float64, objects []object.Object) *
 		}
 	}
 	if hitSomething {
-		return &color.RGB{
-			Red:   int(0.5 * ((hitRecord.Normal.X + 1.0) * 255.0)),
-			Green: int(0.5 * ((hitRecord.Normal.Y + 1.0) * 255.0)),
-			Blue:  int(0.5 * ((hitRecord.Normal.Z + 1.0) * 255.0)),
+		c := &color.RGB{
+			Red:   int((0.5 * (hitRecord.Normal.X + 1.0)) * 255.0),
+			Green: int((0.5 * (hitRecord.Normal.Y + 1.0)) * 255.0),
+			Blue:  int((0.5 * (hitRecord.Normal.Z + 1.0)) * 255.0),
 		}
+		return c
 	}
 
 	return &color.RGB{

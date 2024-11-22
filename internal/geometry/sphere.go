@@ -32,7 +32,7 @@ func (s Sphere) Intersect(r types.Ray, tMin float64, tMax float64, hitRecord *ty
 
 	root := (-b - math.Sqrt(discriminant)) / (float64(2.0) * a)
 	if root <= tMin || root >= tMax {
-		root = (-b + math.Sqrt(discriminant)/(float64(2.0)*a))
+		root = (-b + math.Sqrt(discriminant)) / (float64(2.0) * a)
 		if root <= tMin || root >= tMax {
 			return false
 		}
@@ -41,6 +41,7 @@ func (s Sphere) Intersect(r types.Ray, tMin float64, tMax float64, hitRecord *ty
 	hitRecord.T = root
 	hitRecord.HitPoint = ray.At(r, hitRecord.T)
 	hitRecord.Normal = vector.UnitVector(vector.SubtractVector(hitRecord.HitPoint, s.Center))
+	hitRecord.ObjectName = s.GetName()
 	hitrecord.SetFaceNormal(hitRecord, r, hitRecord.Normal)
 
 	return true
