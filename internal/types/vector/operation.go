@@ -2,6 +2,7 @@ package vector
 
 import (
 	"math"
+	"math/rand"
 
 	"github.com/lunarisnia/yacg/internal/color"
 	"github.com/lunarisnia/yacg/internal/types"
@@ -73,6 +74,24 @@ func InverseVector(a types.Vector3f) types.Vector3f {
 		X: -a.X,
 		Y: -a.Y,
 		Z: -a.Z,
+	}
+}
+
+func Random() types.Vector3f {
+	return types.Vector3f{
+		X: rand.Float64(),
+		Y: rand.Float64(),
+		Z: rand.Float64(),
+	}
+}
+
+func RandomUnitVector() types.Vector3f {
+	for {
+		randomVector := Random()
+		length := LengthSquared(randomVector)
+		if length <= 1 {
+			return UnitVector(randomVector)
+		}
 	}
 }
 

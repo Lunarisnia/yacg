@@ -19,7 +19,12 @@ func (s Sphere) GetName() string {
 	return s.Name
 }
 
-func (s Sphere) Intersect(r types.Ray, tMin float64, tMax float64, hitRecord *types.HitRecord) bool {
+func (s Sphere) Intersect(
+	r types.Ray,
+	tMin float64,
+	tMax float64,
+	hitRecord *types.HitRecord,
+) bool {
 	center := vector.SubtractVector(s.Center, r.Origin)
 	a := vector.DotProduct(r.Direction, r.Direction)
 	b := vector.DotProduct(r.Direction, center) * -2.0

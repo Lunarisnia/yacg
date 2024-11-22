@@ -12,7 +12,17 @@ func At(r types.Ray, t float64) types.Vector3f {
 	return vector.AddVector(r.Origin, vector.MultiplyScalar(r.Direction, t))
 }
 
-func Raycast(r types.Ray, tMin float64, tMax float64, objects []object.Object) *color.RGB {
+func Raycast(
+	r types.Ray,
+	depth int,
+	maxDepth int,
+	tMin float64,
+	tMax float64,
+	objects []object.Object,
+) *color.RGB {
+	if depth >= maxDepth {
+		return &color.RGB{}
+	}
 	closestObject := tMax // Usually start with positive Infinite
 	hitRecord := types.HitRecord{}
 	hitSomething := false
@@ -26,17 +36,29 @@ func Raycast(r types.Ray, tMin float64, tMax float64, objects []object.Object) *
 		}
 	}
 	if hitSomething {
-		c := &color.RGB{
-			Red:   int((0.5 * (hitRecord.Normal.X + 1.0)) * 255.0),
-			Green: int((0.5 * (hitRecord.Normal.Y + 1.0)) * 255.0),
-			Blue:  int((0.5 * (hitRecord.Normal.Z + 1.0)) * 255.0),
+		// Send rays randomly to simulate a diffuse surface
+		bounceDirection := vector.RandomUnitVector()
+		facingOut := vector.DotProduct(hitRecord.Normal, bounceDirection) > 0.0
+		if !facingOut {
+			bounceDirection = vector.InverseVector(bounceDirection)
 		}
+		// True Lambertian Reflection
+		bounceDirection = vector.UnitVector(vector.AddVector(hitRecord.Normal, bounceDirection))
+
+		// Trace where the ray go recursively or just return the background if it does not intersect with anything
+		c := Raycast(types.Ray{
+			Origin:    hitRecord.HitPoint,
+			Direction: bounceDirection,
+		}, depth+1, maxDepth, tMin, tMax, objects)
+		c.Red = int(0.5 * float64(c.Red))
+		c.Green = int(0.5 * float64(c.Green))
+		c.Blue = int(0.5 * float64(c.Blue))
 		return c
 	}
 
 	return &color.RGB{
-		Red:   15,
-		Blue:  15,
-		Green: 15,
+		Red:   100,
+		Blue:  100,
+		Green: 100,
 	}
 }

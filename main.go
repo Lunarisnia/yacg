@@ -99,6 +99,7 @@ func main() {
 		Radius: 100,
 	})
 
+	maxDepth := 10
 	counter := 0
 	for i := range screenHeight {
 		for j := range screenWidth {
@@ -118,7 +119,7 @@ func main() {
 			}
 			// fmt.Println("Center Point: ", pixelCenter)
 			// fmt.Println("Ray Point: ", r)
-			colorVector := ray.Raycast(r, 0.0, math.Inf(1), objects)
+			colorVector := ray.Raycast(r, 0, maxDepth, 0.001, math.Inf(1), objects)
 			newPPM.DrawPixel(colorVector)
 			counter++
 		}
