@@ -10,11 +10,16 @@ import (
 )
 
 type Sphere struct {
+	Name   string
 	Center types.Vector3f
 	Radius float64
 }
 
-func (s Sphere) Intersect(r types.Ray, hitRecord *types.HitRecord) bool {
+func (s Sphere) GetName() string {
+	return s.Name
+}
+
+func (s Sphere) Intersect(r types.Ray, tMin float64, tMax float64, hitRecord *types.HitRecord) bool {
 	center := vector.SubtractVector(s.Center, r.Origin)
 	a := vector.DotProduct(r.Direction, r.Direction)
 	b := vector.DotProduct(r.Direction, center) * -2.0
@@ -26,9 +31,9 @@ func (s Sphere) Intersect(r types.Ray, hitRecord *types.HitRecord) bool {
 	}
 
 	root := (-b - math.Sqrt(discriminant)) / (float64(2.0) * a)
-	if root <= 0.0 || root >= math.Inf(1) {
+	if root <= tMin || root >= tMax {
 		root = (-b + math.Sqrt(discriminant)/(float64(2.0)*a))
-		if root <= 0.0 || root >= math.Inf(1) {
+		if root <= tMin || root >= tMax {
 			return false
 		}
 	}

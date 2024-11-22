@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"log"
+	"math"
 	"os"
 
 	"github.com/lunarisnia/yacg/internal/geometry"
@@ -15,10 +18,16 @@ import (
 
 func init() {
 	// NOTE: use log pkg for debugging and progress bar without affecting the rendering
-	log.SetOutput(os.Stderr)
+	args := os.Args
+	if len(args) > 1 && args[1] == "debug" {
+		dummy := bufio.NewWriter(bytes.NewBuffer([]byte{}))
+		log.SetOutput(dummy)
+	} else {
+		log.SetOutput(os.Stderr)
+	}
 }
 
-// TODO: Do a writing on summary of this code
+// TODO: Do another writing on summary of this code
 // NOTE: Focal Length is the distance between the eye to the viewport/canvas
 func main() {
 	newPPM := ppm.NewPPM()
@@ -63,6 +72,7 @@ func main() {
 
 	objects := make([]object.Object, 0)
 	sphere01 := geometry.Sphere{
+		Name: "Sphere 01",
 		Center: types.Vector3f{
 			X: 0,
 			Y: 0,
@@ -70,6 +80,16 @@ func main() {
 		},
 		Radius: 0.5,
 	}
+	sphere02 := geometry.Sphere{
+		Name: "Sphere 02",
+		Center: types.Vector3f{
+			X: 0.5,
+			Y: 0,
+			Z: -4.5,
+		},
+		Radius: 1.5,
+	}
+	objects = append(objects, &sphere02)
 	objects = append(objects, &sphere01)
 
 	counter := 0
@@ -90,7 +110,7 @@ func main() {
 			}
 			// fmt.Println("Center Point: ", pixelCenter)
 			// fmt.Println("Ray Point: ", r)
-			colorVector := ray.Raycast(r, objects)
+			colorVector := ray.Raycast(r, 0.0, math.Inf(1), objects)
 			newPPM.DrawPixel(colorVector)
 			counter++
 		}
