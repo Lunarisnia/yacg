@@ -85,13 +85,30 @@ func Random() types.Vector3f {
 	}
 }
 
+func RandomN(min float64, max float64) types.Vector3f {
+	return types.Vector3f{
+		X: min + rand.Float64()*(max-min),
+		Y: min + rand.Float64()*(max-min),
+		Z: min + rand.Float64()*(max-min),
+	}
+}
+
+// RandomUnitVector https://github.com/RayTracing/raytracing.github.io/discussions/1369 for why does it has to be on the sphere hemisphere
 func RandomUnitVector() types.Vector3f {
 	for {
-		randomVector := Random()
+		randomVector := RandomN(-1.0, 1.0)
 		length := LengthSquared(randomVector)
 		if length <= 1 {
 			return UnitVector(randomVector)
 		}
+	}
+}
+
+func ToVector(c *color.RGB) types.Vector3f {
+	return types.Vector3f{
+		X: float64(c.Red),
+		Y: float64(c.Green),
+		Z: float64(c.Blue),
 	}
 }
 

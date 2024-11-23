@@ -56,9 +56,9 @@ func Raycast(
 		return c
 	}
 
-	return &color.RGB{
-		Red:   100,
-		Blue:  100,
-		Green: 100,
-	}
+	a := 0.5 * (r.Direction.Y + 1.0)
+	startColor := vector.MultiplyScalar(types.Vector3f{X: 255, Y: 255, Z: 255}, (1.0 - a))
+	endColor := vector.MultiplyScalar(types.Vector3f{X: 128, Y: 179, Z: 255}, a)
+	resultingColor := vector.AddVector(startColor, endColor)
+	return vector.ToColor(resultingColor)
 }

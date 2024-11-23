@@ -78,6 +78,15 @@ func (p *PPMImpl) DrawPixel(c *color.RGB) error {
 	if c == nil {
 		c = &color.RGB{} // Default to black
 	}
+	if c.Red > 255 {
+		c.Red = 255
+	}
+	if c.Blue > 255 {
+		c.Blue = 255
+	}
+	if c.Green > 255 {
+		c.Green = 255
+	}
 	fmt.Printf("%v %v %v\n", c.Red, c.Green, c.Blue)
 	p.pixelIndex++
 	return nil

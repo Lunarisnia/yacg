@@ -80,6 +80,15 @@ func main() {
 		},
 		Radius: 0.5,
 	})
+	objects = append(objects, &geometry.Sphere{
+		Name: "Sphere 03",
+		Center: types.Vector3f{
+			X: -2,
+			Y: 0,
+			Z: -2,
+		},
+		Radius: 0.5,
+	})
 	objects = append(objects, geometry.Sphere{
 		Name: "Sphere 02",
 		Center: types.Vector3f{
@@ -101,26 +110,57 @@ func main() {
 
 	maxDepth := 10
 	counter := 0
+	samplesPerPixel := 100
+	pixelSampleScale := float64(1.0) / float64(samplesPerPixel)
+
+	antiAliasing := false
+
 	for i := range screenHeight {
 		for j := range screenWidth {
 			log.Printf("Rendering: %v of %v frames\n", counter+1, screenHeight*screenWidth)
-			pixelCenter := vector.AddVector(
-				pixel00,
-				vector.AddVector(
-					vector.MultiplyScalar(pixelDeltaV, float64(i)),
-					vector.MultiplyScalar(pixelDeltaU, float64(j)),
-				),
-			)
-			rayDirection := vector.SubtractVector(pixelCenter, cameraOrigin)
-			// Originates from the eye point moving towards the pixelCenter
-			r := types.Ray{
-				Origin:    cameraOrigin,
-				Direction: vector.UnitVector(rayDirection),
+			colorVector := types.Vector3f{}
+			// Anti-aliasing
+			if antiAliasing {
+				for range samplesPerPixel {
+					sampleSquare := vector.RandomN(-0.5, 0.5)
+					pixelCenter := vector.AddVector(
+						pixel00,
+						vector.AddVector(
+							vector.MultiplyScalar(pixelDeltaV, float64(i)+sampleSquare.Y),
+							vector.MultiplyScalar(pixelDeltaU, float64(j)+sampleSquare.X),
+						),
+					)
+					rayDirection := vector.SubtractVector(pixelCenter, cameraOrigin)
+					// Originates from the eye point moving towards the pixelCenter
+					r := types.Ray{
+						Origin:    cameraOrigin,
+						Direction: vector.UnitVector(rayDirection),
+					}
+					// fmt.Println("Center Point: ", pixelCenter)
+					// fmt.Println("Ray Point: ", r)
+					sampleColor := vector.ToVector(
+						ray.Raycast(r, 0, maxDepth, 0.001, math.Inf(1), objects),
+					)
+
+					colorVector = vector.AddVector(colorVector, sampleColor)
+				}
+				colorVector = vector.MultiplyScalar(colorVector, pixelSampleScale)
+			} else {
+				pixelCenter := vector.AddVector(
+					pixel00,
+					vector.AddVector(
+						vector.MultiplyScalar(pixelDeltaV, float64(i)),
+						vector.MultiplyScalar(pixelDeltaU, float64(j)),
+					),
+				)
+				rayDirection := vector.SubtractVector(pixelCenter, cameraOrigin)
+				r := types.Ray{
+					Origin:    cameraOrigin,
+					Direction: vector.UnitVector(rayDirection),
+				}
+				colorVector = vector.ToVector(ray.Raycast(r, 0, maxDepth, 0.001, math.Inf(1), objects))
 			}
-			// fmt.Println("Center Point: ", pixelCenter)
-			// fmt.Println("Ray Point: ", r)
-			colorVector := ray.Raycast(r, 0, maxDepth, 0.001, math.Inf(1), objects)
-			newPPM.DrawPixel(colorVector)
+			newPPM.DrawPixel(vector.ToColor(colorVector))
 			counter++
 		}
 	}
