@@ -113,7 +113,7 @@ func main() {
 	samplesPerPixel := 100
 	pixelSampleScale := float64(1.0) / float64(samplesPerPixel)
 
-	antiAliasing := false
+	antiAliasing := true
 
 	for i := range screenHeight {
 		for j := range screenWidth {
@@ -160,6 +160,15 @@ func main() {
 				}
 				colorVector = vector.ToVector(ray.Raycast(r, 0, maxDepth, 0.001, math.Inf(1), objects))
 			}
+
+			// Conversion from linear color space to gamma space
+			colorVector.X /= 256
+			colorVector.Y /= 256
+			colorVector.Z /= 256
+			colorVector.X = math.Sqrt(colorVector.X) * 256
+			colorVector.Y = math.Sqrt(colorVector.Y) * 256
+			colorVector.Z = math.Sqrt(colorVector.Z) * 256
+
 			newPPM.DrawPixel(vector.ToColor(colorVector))
 			counter++
 		}
