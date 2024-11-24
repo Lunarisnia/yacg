@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"log"
 	"math"
+	"math/rand/v2"
 	"os"
 
 	"github.com/lunarisnia/yacg/internal/geometry"
@@ -34,7 +35,7 @@ func init() {
 // NOTE: Focal Length is the distance between the eye to the viewport/canvas
 func main() {
 	newPPM := ppm.NewPPM()
-	screenWidth := 640
+	screenWidth := 1920
 	screenHeight := screen.CalculateScreenHeight(float64(screenWidth), screen.SixteenByNine)
 	newPPM.InitPPM(&ppm.PPMHeader{
 		Width:  screenWidth,
@@ -42,10 +43,17 @@ func main() {
 	})
 
 	// Camera Settings
-	vFOV := float64(90)
-	cameraLookFrom := types.Vector3f{X: -2, Y: 2, Z: 1}
-	cameraLookAt := types.Vector3f{X: 0, Y: 0, Z: -1}
+	vFOV := float64(20)
+	cameraLookFrom := types.Vector3f{X: 13, Y: 2, Z: 3}
+	cameraLookAt := types.Vector3f{X: 0, Y: 0, Z: 0}
 	cameraUp := types.Vector3f{X: 0, Y: 1, Z: 0}
+
+	// Render settings
+	maxDepth := 10
+	counter := 0
+	samplesPerPixel := 500
+	pixelSampleScale := float64(1.0) / float64(samplesPerPixel)
+	antiAliasing := true
 
 	focalLength := vector.Length(vector.SubtractVector(cameraLookFrom, cameraLookAt))
 	theta := trigonometry.Deg2Rad(vFOV)
@@ -86,30 +94,86 @@ func main() {
 	)
 
 	objects := make([]object.Object, 0)
-	objects = debuggingObjects()
 	objects = append(objects, geometry.Sphere{
 		Name: "Ground",
 		Center: types.Vector3f{
 			X: 0,
-			Y: -100.5,
-			Z: -1,
+			Y: -1000,
+			Z: 0,
 		},
-		Radius: 100,
+		Radius: 1000,
 		Material: material.Diffuse{
 			Albedo: types.Vector3f{
-				X: 15,
-				Y: 15,
-				Z: 15,
+				X: 128,
+				Y: 128,
+				Z: 128,
 			},
 		},
 	})
+	for a := -11; a < 11; a++ {
+		for b := -11; b < 11; b++ {
+			chooseMaterial := rand.Float64()
+			sphere := geometry.Sphere{
+				Center: types.Vector3f{
+					X: float64(a) + 0.9*rand.Float64(),
+					Y: 0.2,
+					Z: float64(b) + 0.9*rand.Float64(),
+				},
+				Radius: 0.2,
+			}
 
-	maxDepth := 10
-	counter := 0
-	samplesPerPixel := 100
-	pixelSampleScale := float64(1.0) / float64(samplesPerPixel)
+			if vector.Length(
+				vector.SubtractVector(sphere.Center, types.Vector3f{X: 4, Y: 0.2, Z: 0}),
+			) > 0.9 {
+				if chooseMaterial < 0.8 {
+					// Diffuse
+					sphere.Material = material.Diffuse{
+						Albedo: vector.RandomN(0, 255),
+					}
+					objects = append(objects, &sphere)
+				} else if chooseMaterial < 0.95 {
+					// Metal / Specular
+					randomFuzzy := vector.RandomN(0, 0.5)
+					sphere.Material = material.Specular{
+						Albedo: vector.RandomN(128, 255),
+						Fuzzy:  randomFuzzy.X,
+					}
+					objects = append(objects, &sphere)
+				} else {
+					// Glass
+					sphere.Material = material.Dielectric{
+						Albedo:          types.Vector3f{X: 255, Y: 255, Z: 255},
+						RefractiveIndex: 1.5,
+					}
+					objects = append(objects, &sphere)
+				}
+			}
+		}
+	}
 
-	antiAliasing := true
+	objects = append(objects, &geometry.Sphere{
+		Center: types.Vector3f{X: 0, Y: 1, Z: 0},
+		Radius: 1.0,
+		Material: material.Dielectric{
+			Albedo:          types.Vector3f{X: 255, Y: 255, Z: 255},
+			RefractiveIndex: 1.5,
+		},
+	})
+	objects = append(objects, &geometry.Sphere{
+		Center: types.Vector3f{X: -4, Y: 1, Z: 0},
+		Radius: 1.0,
+		Material: material.Diffuse{
+			Albedo: types.Vector3f{X: 64, Y: 75, Z: 10},
+		},
+	})
+	objects = append(objects, &geometry.Sphere{
+		Center: types.Vector3f{X: 4, Y: 1, Z: 0},
+		Radius: 1.0,
+		Material: material.Specular{
+			Albedo: types.Vector3f{X: 200, Y: 76, Z: 128},
+			Fuzzy:  0.0,
+		},
+	})
 
 	for i := range screenHeight {
 		for j := range screenWidth {
