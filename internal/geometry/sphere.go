@@ -50,6 +50,7 @@ func (s Sphere) Intersect(
 	hitRecord.ObjectName = s.GetName()
 	hitrecord.SetFaceNormal(hitRecord, r, hitRecord.Normal)
 	hitRecord.Material = s.Material
+	hitRecord.IncidentalRay = r
 
 	return true
 }

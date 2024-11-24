@@ -112,6 +112,26 @@ func ToVector(c *color.RGB) types.Vector3f {
 	}
 }
 
+// Reflect is a formula to reflect ray given a direction and a normal
+func Reflect(a types.Vector3f, n types.Vector3f) types.Vector3f {
+	b := 2.0 * DotProduct(a, n)
+	return SubtractVector(a, MultiplyScalar(n, b))
+}
+
+func Refract(uv types.Vector3f, n types.Vector3f, refractiveIndex float64) types.Vector3f {
+	cosTheta := math.Min(DotProduct(InverseVector(uv), n), 1.0)
+	refractiveOutPerpendicular := MultiplyScalar(
+		AddVector(MultiplyScalar(n, cosTheta), uv),
+		refractiveIndex,
+	)
+	refractiveOutParallel := MultiplyScalar(
+		n,
+		-math.Sqrt(math.Abs(1.0-LengthSquared(refractiveOutPerpendicular))),
+	)
+
+	return AddVector(refractiveOutPerpendicular, refractiveOutParallel)
+}
+
 // NOTE: YOU CAN'T SUBTRACT SCALAR TO A VECTOR YOU DUMBO
 func SubtractScalar(a types.Vector3f, b float64) types.Vector3f {
 	return types.Vector3f{

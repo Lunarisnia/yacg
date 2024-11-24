@@ -12,6 +12,7 @@ import (
 	"github.com/lunarisnia/yacg/internal/material"
 	"github.com/lunarisnia/yacg/internal/ppm"
 	"github.com/lunarisnia/yacg/internal/screen"
+	"github.com/lunarisnia/yacg/internal/trigonometry"
 	"github.com/lunarisnia/yacg/internal/types"
 	"github.com/lunarisnia/yacg/internal/types/ray"
 	"github.com/lunarisnia/yacg/internal/types/vector"
@@ -32,18 +33,22 @@ func init() {
 // NOTE: Focal Length is the distance between the eye to the viewport/canvas
 func main() {
 	newPPM := ppm.NewPPM()
-	screenWidth := 800
+	screenWidth := 640
 	screenHeight := screen.CalculateScreenHeight(float64(screenWidth), screen.SixteenByNine)
 	newPPM.InitPPM(&ppm.PPMHeader{
 		Width:  screenWidth,
 		Height: screenHeight,
 	})
 
-	vWidth := float64(3.5)
-	vHeight := vWidth / (float64(screenWidth) / float64(screenHeight))
-	// vHeight := float64(2.0)
-	// vWidth := vHeight * (float64(screenWidth) / float64(screenHeight))
+	vFOV := float64(90)
+
 	focalLength := float64(1.0)
+	theta := trigonometry.Deg2Rad(vFOV)
+	h := math.Tan(theta / 2.0)
+	vWidth := float64(3.5) * h * focalLength
+	vHeight := vWidth / (float64(screenWidth) / float64(screenHeight))
+	// vHeight := float64(2.0) * h * focalLength
+	// vWidth := vHeight * (float64(screenWidth) / float64(screenHeight))
 	cameraOrigin := types.Vector3f{X: 0, Y: 0, Z: 0}
 
 	viewportU := types.Vector3f{X: vWidth, Y: 0, Z: 0}
@@ -73,11 +78,11 @@ func main() {
 
 	objects := make([]object.Object, 0)
 	objects = append(objects, &geometry.Sphere{
-		Name: "Sphere 01",
+		Name: "Diffuse Outside Camera",
 		Center: types.Vector3f{
-			X: 1,
+			X: -1,
 			Y: 0,
-			Z: -2,
+			Z: 1,
 		},
 		Radius: 0.5,
 		Material: material.Diffuse{
@@ -89,23 +94,60 @@ func main() {
 		},
 	})
 	objects = append(objects, &geometry.Sphere{
-		Name: "Sphere 03",
+		Name: "Specular To The Left",
 		Center: types.Vector3f{
 			X: -2,
 			Y: 0,
 			Z: -2,
 		},
 		Radius: 0.5,
-		Material: material.Diffuse{
+		Material: material.Specular{
 			Albedo: types.Vector3f{
-				X: 0,
-				Y: 255,
-				Z: 0,
+				X: 100,
+				Y: 100,
+				Z: 10,
 			},
+			Fuzzy: 0.1,
+		},
+	})
+	objects = append(objects, &geometry.Sphere{
+		Name: "Glass Sphere",
+		Center: types.Vector3f{
+			X: -0.95,
+			Y: 0,
+			Z: -1.35,
+		},
+		Radius: 0.5,
+		Material: material.Dielectric{
+			Albedo: types.Vector3f{
+				X: 255,
+				Y: 255,
+				Z: 255,
+			},
+			// Refractive index of a glass
+			RefractiveIndex: 1.50,
+		},
+	})
+	objects = append(objects, &geometry.Sphere{
+		Name: "Inner Glass Sphere",
+		Center: types.Vector3f{
+			X: -0.95,
+			Y: 0,
+			Z: -1.35,
+		},
+		Radius: 0.3,
+		Material: material.Dielectric{
+			Albedo: types.Vector3f{
+				X: 255,
+				Y: 255,
+				Z: 255,
+			},
+			// Refractive index of air / refractive index of water
+			RefractiveIndex: 1.00 / 1.50,
 		},
 	})
 	objects = append(objects, geometry.Sphere{
-		Name: "Sphere 02",
+		Name: "Middle",
 		Center: types.Vector3f{
 			X: 0,
 			Y: 0,
@@ -118,6 +160,23 @@ func main() {
 				Y: 0,
 				Z: 0,
 			},
+		},
+	})
+	objects = append(objects, geometry.Sphere{
+		Name: "Specular To The Right",
+		Center: types.Vector3f{
+			X: 1.25,
+			Y: 0,
+			Z: -1.05,
+		},
+		Radius: 0.5,
+		Material: material.Specular{
+			Albedo: types.Vector3f{
+				X: 50,
+				Y: 50,
+				Z: 50,
+			},
+			Fuzzy: 0.001,
 		},
 	})
 	objects = append(objects, geometry.Sphere{
@@ -146,7 +205,7 @@ func main() {
 
 	for i := range screenHeight {
 		for j := range screenWidth {
-			log.Printf("Rendering: %v of %v frames\n", counter+1, screenHeight*screenWidth)
+			log.Printf("Rendering: %v of %v pixels\n", counter+1, screenHeight*screenWidth)
 			colorVector := types.Vector3f{}
 			// Anti-aliasing
 			if antiAliasing {

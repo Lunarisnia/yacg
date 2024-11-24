@@ -36,15 +36,17 @@ func Raycast(
 		}
 	}
 	if hitSomething {
-		attenuation, bounceRay := hitRecord.Material.Scatter(&hitRecord)
+		attenuation, bounceRay, valid := hitRecord.Material.Scatter(&hitRecord)
+		if valid {
+			// Trace where the ray go recursively or just return the background if it does not intersect with anything
+			c := Raycast(bounceRay, depth+1, maxDepth, tMin, tMax, objects)
 
-		// Trace where the ray go recursively or just return the background if it does not intersect with anything
-		c := Raycast(bounceRay, depth+1, maxDepth, tMin, tMax, objects)
-
-		c.Red = int(attenuation.X * float64(c.Red))
-		c.Green = int(attenuation.Y * float64(c.Green))
-		c.Blue = int(attenuation.Z * float64(c.Blue))
-		return c
+			c.Red = int(attenuation.X * float64(c.Red))
+			c.Green = int(attenuation.Y * float64(c.Green))
+			c.Blue = int(attenuation.Z * float64(c.Blue))
+			return c
+		}
+		return &color.RGB{}
 	}
 
 	a := 0.5 * (r.Direction.Y + 1.0)
