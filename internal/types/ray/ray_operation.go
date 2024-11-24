@@ -36,23 +36,14 @@ func Raycast(
 		}
 	}
 	if hitSomething {
-		// Send rays randomly to simulate a diffuse surface
-		bounceDirection := vector.RandomUnitVector()
-		facingOut := vector.DotProduct(hitRecord.Normal, bounceDirection) > 0.0
-		if !facingOut {
-			bounceDirection = vector.InverseVector(bounceDirection)
-		}
-		// True Lambertian Reflection
-		bounceDirection = vector.UnitVector(vector.AddVector(hitRecord.Normal, bounceDirection))
+		attenuation, bounceRay := hitRecord.Material.Scatter(&hitRecord)
 
 		// Trace where the ray go recursively or just return the background if it does not intersect with anything
-		c := Raycast(types.Ray{
-			Origin:    hitRecord.HitPoint,
-			Direction: bounceDirection,
-		}, depth+1, maxDepth, tMin, tMax, objects)
-		c.Red = int(0.5 * float64(c.Red))
-		c.Green = int(0.5 * float64(c.Green))
-		c.Blue = int(0.5 * float64(c.Blue))
+		c := Raycast(bounceRay, depth+1, maxDepth, tMin, tMax, objects)
+
+		c.Red = int(attenuation.X * float64(c.Red))
+		c.Green = int(attenuation.Y * float64(c.Green))
+		c.Blue = int(attenuation.Z * float64(c.Blue))
 		return c
 	}
 

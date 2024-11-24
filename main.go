@@ -9,6 +9,7 @@ import (
 
 	"github.com/lunarisnia/yacg/internal/geometry"
 	"github.com/lunarisnia/yacg/internal/geometry/object"
+	"github.com/lunarisnia/yacg/internal/material"
 	"github.com/lunarisnia/yacg/internal/ppm"
 	"github.com/lunarisnia/yacg/internal/screen"
 	"github.com/lunarisnia/yacg/internal/types"
@@ -79,6 +80,13 @@ func main() {
 			Z: -2,
 		},
 		Radius: 0.5,
+		Material: material.Diffuse{
+			Albedo: types.Vector3f{
+				X: 0,
+				Y: 0,
+				Z: 255,
+			},
+		},
 	})
 	objects = append(objects, &geometry.Sphere{
 		Name: "Sphere 03",
@@ -88,6 +96,13 @@ func main() {
 			Z: -2,
 		},
 		Radius: 0.5,
+		Material: material.Diffuse{
+			Albedo: types.Vector3f{
+				X: 0,
+				Y: 255,
+				Z: 0,
+			},
+		},
 	})
 	objects = append(objects, geometry.Sphere{
 		Name: "Sphere 02",
@@ -97,6 +112,13 @@ func main() {
 			Z: -1,
 		},
 		Radius: 0.5,
+		Material: material.Diffuse{
+			Albedo: types.Vector3f{
+				X: 128,
+				Y: 0,
+				Z: 0,
+			},
+		},
 	})
 	objects = append(objects, geometry.Sphere{
 		Name: "Ground",
@@ -106,6 +128,13 @@ func main() {
 			Z: -1,
 		},
 		Radius: 100,
+		Material: material.Diffuse{
+			Albedo: types.Vector3f{
+				X: 15,
+				Y: 15,
+				Z: 15,
+			},
+		},
 	})
 
 	maxDepth := 10

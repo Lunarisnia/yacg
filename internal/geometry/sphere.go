@@ -10,9 +10,10 @@ import (
 )
 
 type Sphere struct {
-	Name   string
-	Center types.Vector3f
-	Radius float64
+	Name     string
+	Center   types.Vector3f
+	Radius   float64
+	Material types.Material
 }
 
 func (s Sphere) GetName() string {
@@ -48,6 +49,7 @@ func (s Sphere) Intersect(
 	hitRecord.Normal = vector.UnitVector(vector.SubtractVector(hitRecord.HitPoint, s.Center))
 	hitRecord.ObjectName = s.GetName()
 	hitrecord.SetFaceNormal(hitRecord, r, hitRecord.Normal)
+	hitRecord.Material = s.Material
 
 	return true
 }

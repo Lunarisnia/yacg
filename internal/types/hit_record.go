@@ -6,4 +6,5 @@ type HitRecord struct {
 	Normal     Vector3f
 	T          float64
 	FrontFace  bool
+	Material   Material
 }
