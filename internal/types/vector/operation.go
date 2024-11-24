@@ -132,20 +132,28 @@ func Refract(uv types.Vector3f, n types.Vector3f, refractiveIndex float64) types
 	return AddVector(refractiveOutPerpendicular, refractiveOutParallel)
 }
 
-// NOTE: YOU CAN'T SUBTRACT SCALAR TO A VECTOR YOU DUMBO
-func SubtractScalar(a types.Vector3f, b float64) types.Vector3f {
+func CrossProduct(a types.Vector3f, b types.Vector3f) types.Vector3f {
 	return types.Vector3f{
-		X: a.X - b,
-		Y: a.Y - b,
-		Z: a.Z - b,
+		X: a.Y*b.Z - a.Z*b.Y,
+		Y: a.Z*b.X - a.X*b.Z,
+		Z: a.X*b.Y - a.Y*b.X,
 	}
 }
 
+// NOTE: YOU CAN'T SUBTRACT SCALAR TO A VECTOR YOU DUMBO
+// func SubtractScalar(a types.Vector3f, b float64) types.Vector3f {
+// 	return types.Vector3f{
+// 		X: a.X - b,
+// 		Y: a.Y - b,
+// 		Z: a.Z - b,
+// 	}
+// }
+
 // NOTE: YOU CAN'T ADD SCALAR TO A VECTOR YOU IDIOT
-func AddScalar(a types.Vector3f, b float64) types.Vector3f {
-	return types.Vector3f{
-		X: a.X + b,
-		Y: a.Y + b,
-		Z: a.Z + b,
-	}
-}
+// func AddScalar(a types.Vector3f, b float64) types.Vector3f {
+// 	return types.Vector3f{
+// 		X: a.X + b,
+// 		Y: a.Y + b,
+// 		Z: a.Z + b,
+// 	}
+// }
