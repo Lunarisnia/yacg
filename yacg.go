@@ -1,4 +1,4 @@
-package main
+package yacg
 
 import (
 	"bufio"
@@ -8,6 +8,7 @@ import (
 	"math/rand/v2"
 	"os"
 
+	"github.com/lunarisnia/yacg/internal/color"
 	"github.com/lunarisnia/yacg/internal/geometry"
 	"github.com/lunarisnia/yacg/internal/geometry/object"
 	"github.com/lunarisnia/yacg/internal/material"
@@ -30,12 +31,9 @@ func init() {
 	}
 }
 
-// TODO: Do another writing on summary of this code
-// NOTE: this is missing a depth of field by choice
-// NOTE: Focal Length is the distance between the eye to the viewport/canvas
-func main() {
+func PathTrace(numSamples int, width int, remoteHandler func(x int, y int, c *color.RGB)) {
 	newPPM := ppm.NewPPM()
-	screenWidth := 1920
+	screenWidth := width
 	screenHeight := screen.CalculateScreenHeight(float64(screenWidth), screen.SixteenByNine)
 	newPPM.InitPPM(&ppm.PPMHeader{
 		Width:  screenWidth,
@@ -50,8 +48,8 @@ func main() {
 
 	// Render settings
 	maxDepth := 10
-	counter := 0
-	samplesPerPixel := 500
+	// counter := 0
+	samplesPerPixel := numSamples
 	pixelSampleScale := float64(1.0) / float64(samplesPerPixel)
 	antiAliasing := true
 
@@ -177,7 +175,7 @@ func main() {
 
 	for i := range screenHeight {
 		for j := range screenWidth {
-			log.Printf("Rendering: %v of %v pixels\n", counter+1, screenHeight*screenWidth)
+			// log.Printf("Rendering: %v of %v pixels\n", counter+1, screenHeight*screenWidth)
 			colorVector := types.Vector3f{}
 			// Anti-aliasing
 			if antiAliasing {
@@ -229,8 +227,8 @@ func main() {
 			colorVector.Y = math.Sqrt(colorVector.Y) * 256
 			colorVector.Z = math.Sqrt(colorVector.Z) * 256
 
-			newPPM.DrawPixel(vector.ToColor(colorVector))
-			counter++
+			newPPM.DrawRemotePixel(vector.ToColor(colorVector), j, i, remoteHandler)
+			// counter++
 		}
 	}
 }
@@ -241,7 +239,7 @@ func debuggingObjects() []object.Object {
 		Name: "Diffuse Outside Camera",
 		Center: types.Vector3f{
 			X: -1,
-			Y: 0,
+			Y: 2.0,
 			Z: 1,
 		},
 		Radius: 0.5,
@@ -257,7 +255,7 @@ func debuggingObjects() []object.Object {
 		Name: "Specular To The Left",
 		Center: types.Vector3f{
 			X: -2,
-			Y: 0,
+			Y: 0.2,
 			Z: -2,
 		},
 		Radius: 0.5,
@@ -274,7 +272,7 @@ func debuggingObjects() []object.Object {
 		Name: "Glass Sphere",
 		Center: types.Vector3f{
 			X: -0.95,
-			Y: 0,
+			Y: 2.0,
 			Z: -1.35,
 		},
 		Radius: 0.5,
@@ -292,7 +290,7 @@ func debuggingObjects() []object.Object {
 		Name: "Inner Glass Sphere",
 		Center: types.Vector3f{
 			X: -0.95,
-			Y: 0,
+			Y: 2.0,
 			Z: -1.35,
 		},
 		Radius: 0.3,
@@ -310,7 +308,7 @@ func debuggingObjects() []object.Object {
 		Name: "Middle",
 		Center: types.Vector3f{
 			X: 0,
-			Y: 0,
+			Y: 2.0,
 			Z: -1,
 		},
 		Radius: 0.5,
@@ -326,7 +324,7 @@ func debuggingObjects() []object.Object {
 		Name: "Specular To The Right",
 		Center: types.Vector3f{
 			X: 1.25,
-			Y: 0,
+			Y: 1.25,
 			Z: -1.05,
 		},
 		Radius: 0.5,

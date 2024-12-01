@@ -41,6 +41,7 @@ type PPMHeader struct {
 type PPM interface {
 	InitPPM(header *PPMHeader) error
 	DrawPixel(c *color.RGB) error
+	DrawRemotePixel(c *color.RGB, x int, y int, remoteHandler func(x int, y int, c *color.RGB)) error
 	// DebugImage will print out a 3x2 image with some random color just for debugging ppm
 	DebugImage()
 	DrawCubeCorner()
@@ -68,6 +69,28 @@ func (p *PPMImpl) InitPPM(header *PPMHeader) error {
 	fmt.Println("P3")
 	fmt.Printf("%v %v\n", header.Width, header.Height)
 	fmt.Println(header.MaxColorValue)
+	return nil
+}
+
+func (p *PPMImpl) DrawRemotePixel(c *color.RGB, x int, y int, remoteHandler func(x int, y int, c *color.RGB)) error {
+	if p.pixelIndex >= p.imageSize {
+		return errors.New("pixel exceeded image size. please resize your image")
+	}
+	if c == nil {
+		c = &color.RGB{} // Default to black
+	}
+	if c.Red > 255 {
+		c.Red = 255
+	}
+	if c.Blue > 255 {
+		c.Blue = 255
+	}
+	if c.Green > 255 {
+		c.Green = 255
+	}
+	fmt.Printf("%v %v %v\n", c.Red, c.Green, c.Blue)
+	p.pixelIndex++
+	remoteHandler(x, y, c)
 	return nil
 }
 

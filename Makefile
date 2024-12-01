@@ -1,4 +1,4 @@
 debug:
-	go run . debug | less -S
+	go run ./cmd debug | less -S
 render:
-	go run . > test.ppm
+	go run ./cmd > test.ppm
