@@ -8,7 +8,7 @@ import (
 	"math/rand/v2"
 	"os"
 
-	"github.com/lunarisnia/yacg/internal/color"
+	"github.com/lunarisnia/yacg/color"
 	"github.com/lunarisnia/yacg/internal/geometry"
 	"github.com/lunarisnia/yacg/internal/geometry/object"
 	"github.com/lunarisnia/yacg/internal/material"

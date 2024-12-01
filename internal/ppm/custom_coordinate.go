@@ -1,7 +1,7 @@
 package ppm
 
 import (
-	"github.com/lunarisnia/yacg/internal/color"
+	"github.com/lunarisnia/yacg/color"
 )
 
 func (p *PPMImpl) RenderWithCustomCoordinate() {
