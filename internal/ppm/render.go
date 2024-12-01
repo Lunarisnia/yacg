@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/lunarisnia/yacg/internal/color"
+	"github.com/lunarisnia/yacg/color"
 	"github.com/lunarisnia/yacg/internal/types"
 	"github.com/lunarisnia/yacg/internal/types/vector"
 )

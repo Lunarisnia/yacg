@@ -4,7 +4,7 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/lunarisnia/yacg/internal/color"
+	"github.com/lunarisnia/yacg/color"
 	"github.com/lunarisnia/yacg/internal/types"
 )
 

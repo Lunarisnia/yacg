@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/lunarisnia/yacg"
-	"github.com/lunarisnia/yacg/internal/color"
+	"github.com/lunarisnia/yacg/color"
 )
 
 func main() {

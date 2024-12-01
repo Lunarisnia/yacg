@@ -1,7 +1,7 @@
 package ray
 
 import (
-	"github.com/lunarisnia/yacg/internal/color"
+	"github.com/lunarisnia/yacg/color"
 	"github.com/lunarisnia/yacg/internal/geometry/object"
 	"github.com/lunarisnia/yacg/internal/types"
 	"github.com/lunarisnia/yacg/internal/types/vector"
