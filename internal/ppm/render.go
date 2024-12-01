@@ -88,7 +88,6 @@ func (p *PPMImpl) DrawRemotePixel(c *color.RGB, x int, y int, remoteHandler func
 	if c.Green > 255 {
 		c.Green = 255
 	}
-	fmt.Printf("%v %v %v\n", c.Red, c.Green, c.Blue)
 	p.pixelIndex++
 	remoteHandler(x, y, c)
 	return nil
